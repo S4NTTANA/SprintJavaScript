@@ -14,9 +14,11 @@ html {
    CARROSSEL (HOME) - AJUSTADO E BLINDADO CONTRA DUPLICAÇÃO E CORTES
    ========================================================================== */
 div#carousel {
-    height: 46vh;
+    margin-top: 20px auto;
+    height: 60vh;
     width: 100%;
-    max-height: 628px;
+    max-height: 1000px;
+    position: relative;
     -webkit-transition: all .3s ease-in-out;
     -moz-transition: all .3s ease-in-out;
     transition: all .3s ease-in-out;
@@ -24,7 +26,10 @@ div#carousel {
     /* Novas propriedades para corrigir o layout visual */
     background-repeat: no-repeat;  /* Impede que a foto da Ranger se repita nas laterais */
     background-position: center;   /* Centraliza perfeitamente o veículo no meio da tela */
-    background-size: cover;        /* Faz a foto cobrir toda a área sem distorcer ou deixar faixas pretas */
+    background-size: contain;        /* Faz a foto cobrir toda a área sem distorcer ou deixar faixas pretas */
+
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 div#carousel-title  {
@@ -138,4 +143,38 @@ button {
 
 button:hover {
     background: #1b357e;
+}
+
+.voltar, .avancar, div#carousel + button, main > button {
+    position: absolute;
+    top: 50%;
+    transform: translate(-10%);
+    width: 40px;
+    height: 40px;
+    background-color: #1351d8;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+}
+
+/* Posiciona a seta de Voltar na lateral esquerda */
+.voltar, main > button:first-of-type {
+    left: 3vw;                     /* Afastamento elegante da borda esquerda da tela */
+}
+
+/* Posiciona a seta de Avançar na lateral direita */
+.avancar, main > button:last-of-type {
+    right: 3vw;                    /* Afastamento elegante da borda direita da tela */
+}
+
+/* Efeito de destaque ao passar o mouse nas setas */
+.voltar:hover, .avancar:hover {
+    background-color: #1b357e;     /* Escurece para o azul escuro do rodapé */
+    transform: translateY(-10%) scale(1.1); /* Mantém o alinhamento e cresce levemente */
 }

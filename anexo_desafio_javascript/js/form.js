@@ -1,6 +1,5 @@
 //class contato
 class contato {
-    // Ajustado o construtor exatamente com a estrutura que aparece nas suas anotações
     constructor(nome, sobrenome, email, cpf, telefone, contato) {
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -12,30 +11,38 @@ class contato {
 }
 
 function Post(form) {
-    // Captura os dados diretamente pelos nomes dos elementos do formulário
+    // Captura os dados de forma segura tratando possíveis erros de name no HTML
+    let pegarValor = (nomeCampo) => {
+        let campo = form.elements.namedItem(nomeCampo);
+        return campo ? campo.value : "";
+    };
+
     let data = new contato(
-        form.elements.namedItem("nome").value,
-        form.elements.namedItem("sobrenome").value,
-        form.elements.namedItem("email").value,
-        form.elements.namedItem("cpf").value,
-        form.elements.namedItem("telefone").value,
-        form.elements.namedItem("contato").value
+        pegarValor("nome"),
+        pegarValor("sobrenome"),
+        pegarValor("email"),
+        pegarValor("cpf"),
+        pegarValor("telefone"),
+        pegarValor("contato")
     );
     
     console.log("Dados capturados com sucesso:", data);
 }
 
-function Enviar() {
-    var nome = document.getElementById("nomeid");
+function Enviar(form) {
+    // CORREÇÃO: Busca primeiro pelo ID do seu HTML. Se não achar, tenta pelo name 'nome'
+    var nomeCampo = document.getElementById("nomeid") || form.elements.namedItem("nome");
     
-    if (nome && nome.value !== "") {
-        alert('Obrigado sr(a) ' + nome.value + ' os seus dados foram encaminhados com sucesso!');
+    if (nomeCampo && nomeCampo.value !== "") {
+        alert('Obrigado sr(a) ' + nomeCampo.value + ' os seus dados foram encaminhados com sucesso!');
+    } else {
+        alert('Obrigado! Seus dados foram encaminhados com sucesso!');
     }
 }
 
-// Efeito visual no botão Enviar (Passo 9 do PDF)
+// Efeito visual no botão Enviar e gerenciamento do formulário
 document.addEventListener("DOMContentLoaded", function() {
-    let botaoEnviar = document.querySelector("input[type='submit']") || document.querySelector(".btn");
+    let botaoEnviar = document.querySelector("input[type='submit']") || document.querySelector(".btn") || document.querySelector("form button");
 
     if (botaoEnviar) {
         botaoEnviar.style.transition = "all 0.3s ease";
@@ -55,7 +62,17 @@ document.addEventListener("DOMContentLoaded", function() {
     let formulario = document.querySelector("form");
     if (formulario) {
         formulario.addEventListener("submit", function(event) {
+            // CORREÇÃO 1: Evita que a página recarregue e suma com o console.log
+            event.preventDefault(); 
+            
+            // Executa a captação na classe de contato
             Post(this);
+            
+            // CORREÇÃO 2: Dispara o alerta de sucesso passando o formulário atualizado
+            Enviar(this);
+            
+            // Opcional: Limpa o formulário após o envio bem-sucedido
+            this.reset();
         });
     }
 });

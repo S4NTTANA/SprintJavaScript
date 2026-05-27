@@ -60,7 +60,6 @@ function ShowCompare(){
     
     UpdateCompareTable();
     
-    // Tenta exibir achando pelo ID clássico ou pela classe da div
     let divCompare = document.getElementById("compare") || document.querySelector(".compare") || document.querySelector(".compare-container");
     if (divCompare) {
         divCompare.style.display = "block";
@@ -79,40 +78,49 @@ function UpdateCompareTable(){
         let carro1 = carArr[0];
         let carro2 = carArr[1];
 
-        // Função auxiliar interna para preencher os elementos sem dar erro caso o ID mude um pouco de nome
-        let preencher = (idAlternativo1, idAlternativo2, valor) => {
-            let el = document.getElementById(idAlternativo1) || document.getElementById(idAlternativo2);
+        // Função auxiliar ajustada para o padrão do seu HTML (ex: compare_modelo_0)
+        let preencher = (idBase, sufixo, valor, ehImagem = false) => {
+            let el = document.getElementById(`${idBase}_${sufixo}`);
             if(el) {
-                if(el.tagName === "IMG") el.src = valor;
-                else el.innerText = valor;
+                if(ehImagem) {
+                    // Como o HTML não tem a tag <img> dentro do <td>, criamos ela aqui
+                    el.innerHTML = `<img src="${valor}" width="150" alt="Carro" />`;
+                } else {
+                    // Se o preço ou outro dado vier como número puro do checkbox, converte para string formatada
+                    if (idBase === "compare_preco" && typeof valor === "number") {
+                        el.innerText = `R$ ${valor.toLocaleString('pt-BR')}`;
+                    } else {
+                        el.innerText = valor;
+                    }
+                }
             }
         };
 
-        // Preenche a coluna do Veículo 1 (Testa os dois formatos de ID do template da Ford)
-        preencher("compare-name-1", "compare-1-name", carro1.nome);
-        preencher("compare-price-1", "compare-1-price", carro1.preco);
-        preencher("compare-altCacamba-1", "compare-1-altCacamba", carro1.alturaCacamba);
-        preencher("compare-altVeiculo-1", "compare-1-altVeiculo", carro1.alturaVeiculo);
-        preencher("compare-altSolo-1", "compare-1-altSolo", carro1.alturaSolo);
-        preencher("compare-capCarga-1", "compare-1-capCarga", carro1.capacidadeCarga);
-        preencher("compare-motor-1", "compare-1-motor", carro1.motor);
-        preencher("compare-potencia-1", "compare-1-potencia", carro1.potencia);
-        preencher("compare-volCacamba-1", "compare-1-volCacamba", carro1.volumeCacamba);
-        preencher("compare-roda-1", "compare-1-roda", carro1.roda);
-        preencher("compare-image-1", "compare-1-image", carro1.image);
+        // Preenche a coluna do Veículo 1 (Sufixo _0 no seu HTML)
+        preencher("compare_image", "0", carro1.image, true);
+        preencher("compare_modelo", "0", carro1.nome);
+        preencher("compare_alturacacamba", "0", carro1.alturaCacamba);
+        preencher("compare_alturaveiculo", "0", carro1.alturaVeiculo);
+        preencher("compare_alturasolo", "0", carro1.alturaSolo);
+        preencher("compare_capacidadecarga", "0", carro1.capacidadeCarga);
+        preencher("compare_motor", "0", carro1.motor);
+        preencher("compare_potencia", "0", carro1.potencia);
+        preencher("compare_volumecacamba", "0", carro1.volumeCacamba);
+        preencher("compare_roda", "0", carro1.roda);
+        preencher("compare_preco", "0", carro1.preco);
 
-        // Preenche a coluna do Veículo 2
-        preencher("compare-name-2", "compare-2-name", carro2.nome);
-        preencher("compare-price-2", "compare-2-price", carro2.preco);
-        preencher("compare-altCacamba-2", "compare-2-altCacamba", carro2.alturaCacamba);
-        preencher("compare-altVeiculo-2", "compare-2-altVeiculo", carro2.alturaVeiculo);
-        preencher("compare-altSolo-2", "compare-2-altSolo", carro2.alturaSolo);
-        preencher("compare-capCarga-2", "compare-2-capCarga", carro2.capacidadeCarga);
-        preencher("compare-motor-2", "compare-2-motor", carro2.motor);
-        preencher("compare-potencia-2", "compare-2-potencia", carro2.potencia);
-        preencher("compare-volCacamba-2", "compare-2-volCacamba", carro2.volumeCacamba);
-        preencher("compare-roda-2", "compare-2-roda", carro2.roda);
-        preencher("compare-image-2", "compare-2-image", carro2.image);
+        // Preenche a coluna do Veículo 2 (Sufixo _1 no seu HTML)
+        preencher("compare_image", "1", carro2.image, true);
+        preencher("compare_modelo", "1", carro2.nome);
+        preencher("compare_alturacacamba", "1", carro2.alturaCacamba);
+        preencher("compare_alturaveiculo", "1", carro2.alturaVeiculo);
+        preencher("compare_alturasolo", "1", carro2.alturaSolo);
+        preencher("compare_capacidadecarga", "1", carro2.capacidadeCarga);
+        preencher("compare_motor", "1", carro2.motor);
+        preencher("compare_potencia", "1", carro2.potencia);
+        preencher("compare_volumecacamba", "1", carro2.volumeCacamba);
+        preencher("compare_roda", "1", carro2.roda);
+        preencher("compare_preco", "1", carro2.preco);
     }
 }
 
@@ -123,13 +131,15 @@ const bronco = new Car("Bronco Sport", "R$ 260.000", "-", "1813 mm", "223 mm", "
 
 // Inicialização segura salvando os gatilhos
 document.addEventListener("DOMContentLoaded", function() {
-    let botaoComparar = document.getElementById("btn-comparar") || document.querySelector(".btn-compare") || document.querySelector("button");
+    let botaoComparar = document.getElementById("btn-comparar") || document.querySelector(".btn-compare") || document.querySelector("main button");
     if (botaoComparar) {
+        botaoComparar.removeAttribute("onclick"); // Remove o atributo antigo para focar no EventListener
         botaoComparar.addEventListener("click", ShowCompare);
     }
 
-    let botaoFechar = document.getElementById("close-compare") || document.querySelector(".close");
+    let botaoFechar = document.getElementById("close-compare") || document.querySelector(".close") || document.querySelector("#compare button");
     if (botaoFechar) {
+        botaoFechar.removeAttribute("onclick");
         botaoFechar.addEventListener("click", HideCompare);
     }
 });
